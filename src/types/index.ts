@@ -43,6 +43,7 @@ export type OrderFormData = {
   senderId: number;
   receiverId: number;
   hasCashReceipt: boolean;
+  usedPoint: number;
   cashReceiptType?: 'PERSONAL' | 'BUSINESS';
   cashReceiptNumber?: string;
 };

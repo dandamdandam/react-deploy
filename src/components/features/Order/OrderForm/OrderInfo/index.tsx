@@ -1,9 +1,12 @@
-import { Divider } from '@chakra-ui/react';
+import { Divider, Input } from '@chakra-ui/react';
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
+import { useGetPoint } from '@/api/hooks/useGetPoint';
 import { useGetProductDetail } from '@/api/hooks/useGetProductDetail';
 import { Button } from '@/components/common/Button';
 import { Spacing } from '@/components/common/layouts/Spacing';
+import { useOrderFormContext } from '@/hooks/useOrderFormContext';
 import type { OrderHistory } from '@/types';
 
 import { HeadingText } from '../Common/HeadingText';
@@ -15,9 +18,18 @@ type Props = {
 };
 export const OrderFormOrderInfo = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
+  const [usedPoint, setUsedPoint] = useState(0);
+  const { register } = useOrderFormContext();
 
+  const { data: point, isLoading, isError } = useGetPoint();
   const { data: detail } = useGetProductDetail({ productId: id.toString() });
   const totalPrice = detail.price * count;
+
+  const pointChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const beUsedPoint = Number(e.target.value);
+    if (0 <= beUsedPoint && beUsedPoint <= (point ?? 0) && beUsedPoint <= totalPrice)
+      setUsedPoint(beUsedPoint);
+  };
 
   return (
     <Wrapper>
@@ -27,9 +39,19 @@ export const OrderFormOrderInfo = ({ orderHistory }: Props) => {
       <Divider color="#ededed" />
       <CashReceiptFields />
       <Divider color="#ededed" />
+      <div>
+        <div>{isLoading || isError ? 0 : point ?? 0 - usedPoint}</div>
+        <Input
+          {...register('usedPoint')}
+          value={usedPoint}
+          onChange={(e) => pointChange(e)}
+          type="number"
+          placeholder="사용할 포인트 입력"
+        />
+      </div>
       <ItemWrapper>
         <LabelText>최종 결제금액</LabelText>
-        <HeadingText>{totalPrice}원</HeadingText>
+        <HeadingText>{totalPrice - usedPoint}원</HeadingText>
       </ItemWrapper>
       <Divider color="#ededed" />
       <Spacing height={32} />

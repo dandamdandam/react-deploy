@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { FormProvider, useForm } from 'react-hook-form';
 
+import { addOrder } from '@/api/hooks/useOrder';
 import { Spacing } from '@/components/common/layouts/Spacing';
 import { SplitLayout } from '@/components/common/layouts/SplitLayout';
+import { useAPIBaseURL } from '@/provider/APIBaseURL';
 import type { OrderFormData, OrderHistory } from '@/types';
 
 import { HEADER_HEIGHT } from '../../Layout/Header';
@@ -16,6 +18,7 @@ type Props = {
 
 export const OrderForm = ({ orderHistory }: Props) => {
   const { id, count } = orderHistory;
+  const baseURL = useAPIBaseURL()[0];
 
   const methods = useForm<OrderFormData>({
     defaultValues: {
@@ -36,7 +39,7 @@ export const OrderForm = ({ orderHistory }: Props) => {
       return;
     }
 
-    console.log('values', values);
+    addOrder(values, baseURL);
     alert('주문이 완료되었습니다.');
   };
 
