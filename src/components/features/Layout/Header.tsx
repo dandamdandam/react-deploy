@@ -1,4 +1,4 @@
-import { Input } from '@chakra-ui/react';
+import { Select } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -15,7 +15,7 @@ export const Header = () => {
   const handleLogin = () => {
     navigate(getDynamicPath.login());
   };
-  const handleChangeBaseURL = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeBaseURL = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setBaseURL(e.target.value);
   };
 
@@ -29,11 +29,15 @@ export const Header = () => {
           />
         </Link>
         <RightWrapper>
-          <Input
+          <Select
             placeholder="서버 URL을 입력해주세요"
             value={baseURL}
             onChange={(e) => handleChangeBaseURL(e)}
-          />
+          >
+            <option value="https://api.example.com">mux</option>
+            <option value="http://3.34.142.38:8080">이세진</option>
+            <option value="http://43.201.15.245:8080">오승규</option>
+          </Select>
           {authInfo ? (
             <LinkButton onClick={() => navigate(RouterPath.myAccount)}>내 계정</LinkButton>
           ) : (
